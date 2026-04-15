@@ -1,0 +1,23 @@
+# Data and logs
+logs/
+pretrained_models/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Environment and IDE
+.env
+.venv/
+venv/
+.idea/
+.vscode/
+*.swp
+*~
