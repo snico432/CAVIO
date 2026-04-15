@@ -1,7 +1,5 @@
 _target_: src.models.weighted_vio_module.WeightedVIOLitModule
 
-plot_label: "CAVIO"
-
 optimizer:
   _target_: torch.optim.AdamW
   _partial_: true
@@ -14,7 +12,7 @@ scheduler:
   T_mult: 1
 
 criterion:
-  _target_: src.metrics.weighted_loss.RPMGPoseLoss
+  _target_: src.losses.weighted_loss.RPMGPoseLoss
   base_loss_fn:
     _target_: torch.nn.L1Loss
     reduction: none
@@ -24,10 +22,13 @@ net:
   _target_: src.models.components.cavio.CAVIOPoseTransformer
   input_dim: 768
   embedding_dim: 512
-  num_layers: 8
-  nhead: 6
+  num_layers: 4
+  nhead: 8
   dim_feedforward: 1024
-  dropout: 0.0
+  attn_dropout: 0.0
+  residual_dropout: 0.0
+  ffn_dropout: 0.0
+  return_attention_weights: False
 
 tester:
   _target_: src.testers.latent_kitti_eval_harness.LatentKittiEvalHarness
@@ -44,6 +45,7 @@ tester:
   use_history_in_eval: True
   plot_label: "CAVIO"
   plot_speed: false
+  save_poses: false
 
 # compile model for faster training with pytorch 2.0
 compile: true

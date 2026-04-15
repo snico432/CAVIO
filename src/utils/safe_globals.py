@@ -9,7 +9,6 @@ from src.data.vio_datamodule import VIODataModule
 from src.losses.weighted_loss import RPMGPoseLoss
 from src.models.components.cavio import CAVIOPoseTransformer
 from src.models.components.vift import PoseTransformer
-from src.models.vio_module import VIOLitModule
 from src.models.weighted_vio_module import WeightedVIOLitModule
 from src.testers.latent_kitti_eval_harness import LatentKittiEvalHarness
 
@@ -27,7 +26,6 @@ def register_safe_globals() -> None:
             RPMGPoseLoss,
             CAVIOPoseTransformer,
             PoseTransformer,
-            VIOLitModule,
             WeightedVIOLitModule,
             LatentKittiEvalHarness,
         ]

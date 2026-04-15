@@ -26,11 +26,13 @@ class LatentKittiEvalHarness(BaseTester):
         use_history_in_eval=False,
         plot_label: str = "Ours",
         plot_speed: bool = False,
+        save_poses: bool = False,
     ):
         super().__init__()
         self.val_seq = val_seqs
         self.plot_label = plot_label
         self.plot_speed = plot_speed
+        self.save_poses = save_poses
         self.data_dir = data_dir
         self.seq_len = seq_len
         self.folder = folder
@@ -79,9 +81,12 @@ class LatentKittiEvalHarness(BaseTester):
         return pose_results, error_metrics
 
     def save_results(self, results: Dict[str, Any], error_metrics: Dict[str, Any], save_dir: str):
-        for seq_name, seq_data in results.items():
-            np.save(os.path.join(save_dir, f"{seq_name}_estimated_poses.npy"), seq_data["estimated_poses"])
-            np.save(os.path.join(save_dir, f"{seq_name}_gt_poses.npy"), seq_data["gt_poses"])
+        if self.save_poses:
+            poses_dir = os.path.join(save_dir, "poses")
+            os.makedirs(poses_dir, exist_ok=True)
+            for seq_name, seq_data in results.items():
+                np.save(os.path.join(poses_dir, f"{seq_name}_estimated_poses.npy"), seq_data["estimated_poses"])
+                np.save(os.path.join(poses_dir, f"{seq_name}_gt_poses.npy"), seq_data["gt_poses"])
         with open(os.path.join(save_dir, "error_metrics.json"), "w") as f:
             json.dump(error_metrics, f, indent=2, sort_keys=True)
             f.write("\n")

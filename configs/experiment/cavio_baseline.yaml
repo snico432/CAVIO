@@ -13,3 +13,6 @@ defaults:
 tags: ["CAVIO", "Baseline"]
 
 seed: 42
+
+tester:
+  plot_label: "CAVIO Baseline"

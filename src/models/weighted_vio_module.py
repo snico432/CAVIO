@@ -58,6 +58,7 @@ class WeightedVIOLitModule(LightningModule):
         pass
 
     def on_fit_end(self):
+        run_root = Path(self.trainer.default_root_dir)
         csv_logger = None
         for logger in getattr(self.trainer, "loggers", []):
             if logger.__class__.__name__ == "CSVLogger":
@@ -68,7 +69,7 @@ class WeightedVIOLitModule(LightningModule):
         metrics_path = Path(csv_logger.log_dir) / "metrics.csv"
         if not metrics_path.is_file():
             return
-        plots_dir = Path(csv_logger.save_dir) / "plots"
+        plots_dir = run_root / "plots"
         plots_dir.mkdir(parents=True, exist_ok=True)
         try:
             loss_plot_path, component_plot_path = plot_train_losses(
@@ -88,9 +89,10 @@ class WeightedVIOLitModule(LightningModule):
             self.log(f"test/{name}", value)
             metric_sum += value
         self.log("hp_metric", metric_sum)
-        
-        save_dir = self.trainer.logger.log_dir
-        self.tester.save_results(pose_results, error_metrics, save_dir)
+
+        save_dir = Path(self.trainer.default_root_dir)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        self.tester.save_results(pose_results, error_metrics, str(save_dir))
 
     def setup(self, stage):
         """Lightning hook that is called at the beginning of fit (train + validate), validate,

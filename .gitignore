@@ -1,4 +1,5 @@
 # Data and logs
+data/
 logs/
 pretrained_models/
 
