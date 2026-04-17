@@ -5,7 +5,7 @@
 defaults:
   - _self_
   - data: latent_kitti_vio
-  - model: latent_cross_attn_vio
+  - model: cavio
   - callbacks: default
   - logger: many_loggers
   - trainer: default

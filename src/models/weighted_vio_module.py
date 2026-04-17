@@ -100,8 +100,14 @@ class WeightedVIOLitModule(LightningModule):
 
         :param stage: Either `"fit"`, `"validate"`, `"test"`, or `"predict"`.
         """
-        if self.hparams.compile and stage == "fit":
-            self.net = torch.compile(self.net)
+        # Training wraps `net` with torch.compile, so checkpoints store weights under
+        # `net._orig_mod.*`. Eval/validate/predict must apply the same wrap before
+        # Lightning loads the checkpoint, or load_state_dict key names won't match.
+        # Do not compile twice: train→test reuses the same module, and
+        # ``torch.compile`` on an already-compiled module breaks (TypeError).
+        if self.hparams.compile and stage in ("fit", "test", "validate", "predict"):
+            if not hasattr(self.net, "_orig_mod"):
+                self.net = torch.compile(self.net)
 
     def configure_optimizers(self):
         optimizer = self.hparams.optimizer(params=self.trainer.model.parameters())

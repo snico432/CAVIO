@@ -2,7 +2,7 @@ defaults:
   - model_checkpoint
   - model_summary
   - rich_progress_bar
-  - early_stopping
+  # - early_stopping Include if you want to use early stopping
   - _self_
 
 model_checkpoint:
@@ -12,11 +12,6 @@ model_checkpoint:
   mode: "min"
   save_last: True
   auto_insert_metric_name: False
-
-early_stopping:
-  monitor: "val/loss"
-  patience: 5
-  mode: "min"
 
 model_summary:
   max_depth: -1

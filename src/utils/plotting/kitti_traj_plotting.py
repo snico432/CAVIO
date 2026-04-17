@@ -198,7 +198,7 @@ def plotAllPaths(
         ax_y.legend(loc="upper right", fontsize=8)
         ax_y.grid(True, alpha=0.3)
 
-    out_path = save_dir / "all_paths.png"
+    out_path = save_dir / "trajectories.png"
     plt.tight_layout()
     plt.savefig(out_path, dpi=150, bbox_inches="tight", pad_inches=0.1)
     plt.close()

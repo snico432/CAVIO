@@ -30,5 +30,6 @@ pytest          # tests
 # sh            # for running bash commands in some tests (linux/macos only)
 path
 matplotlib
+gdown>=5.0.0    # pretrained weights: pretrained_model/download_model.py
 
 natsort

@@ -1,0 +1,19 @@
+# @package _global_
+
+# IMUOnlyPoseTransformer: causal self-attention on IMU latent tokens (visual latents in the batch are ignored).
+# To run:
+#   python src/train.py experiment=imu_only_baseline
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: imu_only
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["IMU-only", "Baseline"]
+
+seed: 42
+
+model:
+  tester:
+    plot_label: "IMU-only Baseline"

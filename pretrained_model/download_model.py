@@ -10,12 +10,14 @@ Install:
     pip install gdown
 
 Default URL points to the weights also used in the VIFT paper.
-The model will be saved in the ./pretrained_models folder with the name vf_512_if_256_3e-05.model
-unless overridden with -o.
+The file is saved under the chosen directory using **Google Drive's filename** (gdown default).
+
+Keep ``model.tester.wrapper_weights_path`` in sync with that name (expected:
+``pretrained_model/vf_512_if_256_3e-05.model`` for the default URL).
 
 Usage:
     python download_model.py
-    python download_model.py -o ./pretrained_models/encoder_weights.pt
+    python download_model.py -o /path/to/dir
     python download_model.py --url "https://drive.google.com/file/d/FILE_ID/view?usp=sharing"
 """
 
@@ -33,7 +35,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Download a file from Google Drive using gdown."
+        description="Download a file from Google Drive using gdown (remote filename preserved)."
     )
     parser.add_argument(
         "--url",
@@ -42,31 +44,18 @@ def main() -> None:
     )
     parser.add_argument(
         "-o",
-        "--output",
+        "--output-dir",
         type=Path,
         default=None,
-        metavar="PATH",
-        help=(
-            "Destination: a file path, or a directory. "
-            "Default: this folder; Drive's original filename is kept."
-        ),
+        metavar="DIR",
+        help="Directory to write into (default: directory containing this script).",
     )
     args = parser.parse_args()
 
-    if args.output is None:
-        # Directory with trailing slash -> gdown keeps the remote filename
-        output = str(SCRIPT_DIR) + "/"
-    else:
-        out = args.output.expanduser().resolve()
-        if out.exists() and out.is_dir():
-            output = str(out).rstrip("/") + "/"
-        else:
-            parent = out.parent
-            if not parent.exists():
-                parent.mkdir(parents=True, exist_ok=True)
-            output = str(out)
-
-    gdown.download(args.url, output, fuzzy=True, quiet=False)
+    dest = (args.output_dir or SCRIPT_DIR).expanduser().resolve()
+    dest.mkdir(parents=True, exist_ok=True)
+    # Trailing slash => gdown keeps the file name from Google Drive
+    gdown.download(args.url, str(dest).rstrip("/") + "/", quiet=False)
 
 
 if __name__ == "__main__":

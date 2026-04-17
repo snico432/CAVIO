@@ -1,0 +1,22 @@
+# @package _global_
+
+# Gated CAVIO: same stack as CAVIO (cross-attn -> self-attn -> FFN), with learnable
+# per-layer tanh gates on the cross-attention and FFN residual paths (alpha init 0).
+# To run:
+#   python src/train.py experiment=gated_cavio trainer=gpu
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: cavio
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "Gated CA"]
+
+seed: 42
+
+model:
+  net:
+    _target_: src.models.components.cavio_gated.GatedCAVIOPoseTransformer
+  tester:
+    plot_label: "Gated CAVIO"

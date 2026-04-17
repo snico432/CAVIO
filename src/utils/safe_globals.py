@@ -8,6 +8,8 @@ from src.data.components.cached_kitti_latent_dataset import CachedKittiLatentDat
 from src.data.vio_datamodule import VIODataModule
 from src.losses.weighted_loss import RPMGPoseLoss
 from src.models.components.cavio import CAVIOPoseTransformer
+from src.models.components.cavio_gated import GatedCAVIOPoseTransformer
+from src.models.components.imu_only import IMUOnlyPoseTransformer
 from src.models.components.vift import PoseTransformer
 from src.models.weighted_vio_module import WeightedVIOLitModule
 from src.testers.latent_kitti_eval_harness import LatentKittiEvalHarness
@@ -25,6 +27,8 @@ def register_safe_globals() -> None:
             VIODataModule,
             RPMGPoseLoss,
             CAVIOPoseTransformer,
+            GatedCAVIOPoseTransformer,
+            IMUOnlyPoseTransformer,
             PoseTransformer,
             WeightedVIOLitModule,
             LatentKittiEvalHarness,

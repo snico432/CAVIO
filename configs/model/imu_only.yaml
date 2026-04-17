@@ -19,7 +19,7 @@ criterion:
   angle_weight: 25
 
 net:
-  _target_: src.models.components.cavio.CAVIOPoseTransformer
+  _target_: src.models.components.imu_only.IMUOnlyPoseTransformer
   input_dim: 768
   embedding_dim: 512
   num_layers: 4

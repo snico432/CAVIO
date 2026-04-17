@@ -3,16 +3,24 @@
 defaults:
   - _self_
   - data: latent_kitti_vio # choose datamodule with `test_dataloader()` for evaluation
-  - model: latent_cross_attn_vio
+  - model: cavio
+  - callbacks: default # required so experiment=... can override /callbacks (eval uses with_callbacks=False)
   - logger: many_loggers
   - paths: default
   - extras: default
   - hydra: default
   - trainer: default
 
+  # same pattern as train.yaml: allows `experiment=foo` without `+experiment=foo`
+  - experiment: null
+
 task_name: "eval"
 
 tags: ["dev"]
 
+model:
+  tester:
+    plot_label: ???
+    save_poses: true
 # passing checkpoint path is necessary for evaluation
 ckpt_path: ???

@@ -4,7 +4,8 @@
 Lightning wiring lives in ``LatentKittiEvalHarness`` (``latent_kitti_eval_harness.py``).
 """
 
-import os
+from pathlib import Path
+
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -42,20 +43,24 @@ class LatentKittiEvalRunner:
         self.plot_label = plot_label
 
     def load_wrapper_weights(self, weights_path):
-        if os.path.exists(weights_path):
-            pretrained_w = torch.load(weights_path, map_location="cpu")
+        path = Path(weights_path).expanduser().resolve()
+        if not path.is_file():
+            raise FileNotFoundError(
+                "Latent KITTI eval needs the Visual-Selective-VIO encoder weights. "
+                f"Not found at {path}. "
+                "From the repo root run: python pretrained_model/download_model.py"
+            )
+        pretrained_w = torch.load(path, map_location="cpu")
 
-            model_dict = self.wrapper_model.state_dict()
-            update_dict = {k: v for k, v in pretrained_w.items() if k in model_dict}
+        model_dict = self.wrapper_model.state_dict()
+        update_dict = {k: v for k, v in pretrained_w.items() if k in model_dict}
 
-            assert len(update_dict.keys()) == len(
-                self.wrapper_model.Feature_net.state_dict().keys()
-            ), "Some weights are not loaded"
+        assert len(update_dict.keys()) == len(
+            self.wrapper_model.Feature_net.state_dict().keys()
+        ), "Some weights are not loaded"
 
-            self.wrapper_model.load_state_dict(update_dict)
-            print(f"Loaded wrapper model weights from {weights_path}")
-        else:
-            print(f"Warning: Wrapper model weights not found at {weights_path}")
+        self.wrapper_model.load_state_dict(update_dict)
+        print(f"Loaded wrapper model weights from {path}")
 
     def test_one_path(self, net, df, num_gpu=1):
         pose_list = []
@@ -142,20 +147,24 @@ class LatentKittiEvalRunnerTokenized:
         self.plot_label = plot_label
 
     def load_wrapper_weights(self, weights_path):
-        if os.path.exists(weights_path):
-            pretrained_w = torch.load(weights_path, map_location="cpu")
+        path = Path(weights_path).expanduser().resolve()
+        if not path.is_file():
+            raise FileNotFoundError(
+                "Latent KITTI eval needs the Visual-Selective-VIO encoder weights. "
+                f"Not found at {path}. "
+                "From the repo root run: python pretrained_model/download_model.py"
+            )
+        pretrained_w = torch.load(path, map_location="cpu")
 
-            model_dict = self.wrapper_model.state_dict()
-            update_dict = {k: v for k, v in pretrained_w.items() if k in model_dict}
+        model_dict = self.wrapper_model.state_dict()
+        update_dict = {k: v for k, v in pretrained_w.items() if k in model_dict}
 
-            assert len(update_dict.keys()) == len(
-                self.wrapper_model.Feature_net.state_dict().keys()
-            ), "Some weights are not loaded"
+        assert len(update_dict.keys()) == len(
+            self.wrapper_model.Feature_net.state_dict().keys()
+        ), "Some weights are not loaded"
 
-            self.wrapper_model.load_state_dict(update_dict)
-            print(f"Loaded wrapper model weights from {weights_path}")
-        else:
-            print(f"Warning: Wrapper model weights not found at {weights_path}")
+        self.wrapper_model.load_state_dict(update_dict)
+        print(f"Loaded wrapper model weights from {path}")
 
     def test_one_path(self, net, df, num_gpu=1):
         pose_list = []

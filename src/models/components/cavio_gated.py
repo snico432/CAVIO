@@ -2,9 +2,14 @@ from torch import nn
 import torch
 import math
 
-class IMUOnlyPoseTransformer(nn.Module):
+class GatedCAVIOPoseTransformer(nn.Module):
     """
-    Pose transformer variant that performs self-attention on IMU latent tokens:
+    Same block order as :class:`CAVIOPoseTransformer`, but with
+    learnable per-layer gates on the cross-attention and FFN residual branches.
+
+    The gates use ``tanh(alpha)`` so initializing ``alpha=0`` starts from a
+    conservative regime where the new branch is effectively off and can be
+    turned on smoothly during training.
     """
 
     def __init__(
@@ -20,6 +25,8 @@ class IMUOnlyPoseTransformer(nn.Module):
         residual_dropout=0.0,
         ffn_dropout=0.0,
         return_attention_weights=False,
+        alpha_xattn_init=0.0,
+        alpha_ffn_init=0.0,
     ):
         super().__init__()
 
@@ -35,6 +42,7 @@ class IMUOnlyPoseTransformer(nn.Module):
         self.embedding_dim = embedding_dim
         self.num_layers = num_layers
 
+        self.fc_visual = nn.Linear(v_f_len, embedding_dim)
         self.fc_imu = nn.Linear(i_f_len, embedding_dim)
 
         self.residual_dropout = nn.Dropout(residual_dropout)
@@ -42,22 +50,41 @@ class IMUOnlyPoseTransformer(nn.Module):
             [
                 nn.ModuleDict(
                     {
-                        "self_attn": nn.MultiheadAttention(
+                        "cross_attn": nn.MultiheadAttention(
                             embed_dim=embedding_dim,
                             num_heads=nhead,
                             dropout=attn_dropout,
                             batch_first=True,
                         ),
                         "ln1": nn.LayerNorm(embedding_dim),
+                        "self_attn": nn.MultiheadAttention(
+                            embed_dim=embedding_dim,
+                            num_heads=nhead,
+                            dropout=attn_dropout,
+                            batch_first=True,
+                        ),
+                        "ln2": nn.LayerNorm(embedding_dim),
                         "ffn": nn.Sequential(
                             nn.Linear(embedding_dim, dim_feedforward),
                             nn.ReLU(),
                             nn.Dropout(ffn_dropout),
                             nn.Linear(dim_feedforward, embedding_dim),
                         ),
-                        "ln2": nn.LayerNorm(embedding_dim),
+                        "ln3": nn.LayerNorm(embedding_dim),
                     }
                 )
+                for _ in range(num_layers)
+            ]
+        )
+        self.alpha_xattn = nn.ParameterList(
+            [
+                nn.Parameter(torch.tensor(float(alpha_xattn_init)))
+                for _ in range(num_layers)
+            ]
+        )
+        self.alpha_ffn = nn.ParameterList(
+            [
+                nn.Parameter(torch.tensor(float(alpha_ffn_init)))
                 for _ in range(num_layers)
             ]
         )
@@ -81,7 +108,6 @@ class IMUOnlyPoseTransformer(nn.Module):
         return pos_embedding
 
     def generate_square_subsequent_mask(self, sz: int, device=None, dtype=None) -> torch.Tensor:
-        # Additive attn mask with -inf above the diagonal.
         if device is None:
             device = torch.device("cpu")
         if dtype is None:
@@ -92,26 +118,40 @@ class IMUOnlyPoseTransformer(nn.Module):
         )
 
     def forward(self, batch, gt):
-        visual_inertial_features, _, _ = batch  # (B, S, v_f_len+i_f_len); visual slice unused
+        visual_inertial_features, _, _ = batch  # (B, S, v_f_len+i_f_len)
         seq_length = visual_inertial_features.size(1)
 
+        visual = visual_inertial_features[..., : self.v_f_len]
         imu = visual_inertial_features[..., self.v_f_len : self.v_f_len + self.i_f_len]
 
-        # (B, S, E)
+        visual = self.fc_visual(visual)
         imu = self.fc_imu(imu)
 
-        pos_embedding = self.positional_embedding(seq_length).to(imu.device)
+        pos_embedding = self.positional_embedding(seq_length).to(visual.device)
+        visual = visual + pos_embedding
         imu = imu + pos_embedding
 
-        # Causal mask so timestep t cannot attend to future visual or IMU tokens.
         attn_mask = self.generate_square_subsequent_mask(
-            seq_length, device=imu.device, dtype=imu.dtype
+            seq_length, device=visual.device, dtype=visual.dtype
         )
 
         need_w = self.return_attention_weights
+        cross_weights_list = []
         self_weights_list = []
 
-        for layer in self.layers:
+        for idx, layer in enumerate(self.layers):
+            cross_attn_out, cross_w = layer["cross_attn"](
+                query=imu,
+                key=visual,
+                value=visual,
+                attn_mask=attn_mask,
+                need_weights=need_w,
+                average_attn_weights=True,
+            )
+            imu = layer["ln1"](
+                imu + torch.tanh(self.alpha_xattn[idx]) * self.residual_dropout(cross_attn_out)
+            )
+
             self_attn_out, self_w = layer["self_attn"](
                 query=imu,
                 key=imu,
@@ -120,15 +160,18 @@ class IMUOnlyPoseTransformer(nn.Module):
                 need_weights=need_w,
                 average_attn_weights=True,
             )
-            imu = layer["ln1"](imu + self.residual_dropout(self_attn_out))
+            imu = layer["ln2"](imu + self.residual_dropout(self_attn_out))
 
             ffn_out = layer["ffn"](imu)
-            imu = layer["ln2"](imu + self.residual_dropout(ffn_out))
+            imu = layer["ln3"](
+                imu + torch.tanh(self.alpha_ffn[idx]) * self.residual_dropout(ffn_out)
+            )
 
             if need_w:
+                cross_weights_list.append(cross_w)
                 self_weights_list.append(self_w)
 
         out = self.fc2(imu)
         if need_w:
-            return out, {"self_attn": self_weights_list}
+            return out, {"cross_attn": cross_weights_list, "self_attn": self_weights_list}
         return out
