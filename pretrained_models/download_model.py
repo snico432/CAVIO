@@ -13,7 +13,7 @@ Default URL points to the weights also used in the VIFT paper.
 The file is saved under the chosen directory using **Google Drive's filename** (gdown default).
 
 Keep ``model.tester.wrapper_weights_path`` in sync with that name (expected:
-``pretrained_model/vf_512_if_256_3e-05.model`` for the default URL).
+``pretrained_models/vf_512_if_256_3e-05.model`` for the default URL).
 
 Usage:
     python download_model.py

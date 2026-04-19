@@ -48,7 +48,7 @@ class LatentKittiEvalRunner:
             raise FileNotFoundError(
                 "Latent KITTI eval needs the Visual-Selective-VIO encoder weights. "
                 f"Not found at {path}. "
-                "From the repo root run: python pretrained_model/download_model.py"
+                "From the repo root run: python pretrained_models/download_model.py"
             )
         pretrained_w = torch.load(path, map_location="cpu")
 
@@ -152,7 +152,7 @@ class LatentKittiEvalRunnerTokenized:
             raise FileNotFoundError(
                 "Latent KITTI eval needs the Visual-Selective-VIO encoder weights. "
                 f"Not found at {path}. "
-                "From the repo root run: python pretrained_model/download_model.py"
+                "From the repo root run: python pretrained_models/download_model.py"
             )
         pretrained_w = torch.load(path, map_location="cpu")
 

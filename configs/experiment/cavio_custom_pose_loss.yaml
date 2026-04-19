@@ -1,0 +1,27 @@
+# @package _global_
+
+# Per-axis pose loss: uniform rotation; translation X/Z uniform, Y (vertical) weighted higher.
+# To run:
+#   python src/train.py experiment=cavio_custom_pose_loss trainer=gpu
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: cavio
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "Custom pose loss"]
+
+seed: 42
+
+model:
+  criterion:
+    _target_: src.losses.weighted_loss.CustomWeightedPoseLoss
+    base_loss_fn:
+      _target_: torch.nn.L1Loss
+      reduction: mean
+    angle_weight: 25
+    rot_w: [1.0, 1.0, 1.0]
+    trans_w: [1.0, 2.5, 1.0]
+  tester:
+    plot_label: "CAVIO custom pose loss"

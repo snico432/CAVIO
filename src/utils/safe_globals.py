@@ -6,9 +6,14 @@ import torch
 
 from src.data.components.cached_kitti_latent_dataset import CachedKittiLatentDataset
 from src.data.vio_datamodule import VIODataModule
-from src.losses.weighted_loss import RPMGPoseLoss
+from src.losses.weighted_loss import (
+    CustomWeightedPoseLoss,
+    DataWeightedRPMGPoseLoss,
+    RPMGPoseLoss,
+)
 from src.models.components.cavio import CAVIOPoseTransformer
 from src.models.components.cavio_gated import GatedCAVIOPoseTransformer
+from src.models.components.cavio_visual_residual import VisualResidualCAVIOPoseTransformer
 from src.models.components.imu_only import IMUOnlyPoseTransformer
 from src.models.components.vift import PoseTransformer
 from src.models.weighted_vio_module import WeightedVIOLitModule
@@ -26,8 +31,11 @@ def register_safe_globals() -> None:
             CachedKittiLatentDataset,
             VIODataModule,
             RPMGPoseLoss,
+            DataWeightedRPMGPoseLoss,
+            CustomWeightedPoseLoss,
             CAVIOPoseTransformer,
             GatedCAVIOPoseTransformer,
+            VisualResidualCAVIOPoseTransformer,
             IMUOnlyPoseTransformer,
             PoseTransformer,
             WeightedVIOLitModule,

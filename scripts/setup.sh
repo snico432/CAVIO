@@ -13,7 +13,7 @@ ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$ROOT"
 
 # Download the pretrained model
-python3 ./pretrained_model/download_model.py
+python3 ./pretrained_models/download_model.py
 
 # Download the KITTI dataset
 bash ./data/data_prep.sh

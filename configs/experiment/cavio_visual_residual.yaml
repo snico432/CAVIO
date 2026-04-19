@@ -1,0 +1,20 @@
+# @package _global_
+
+# VisualResidual CAVIO: gated CAVIO with an additional learned visual residual
+# injected directly into the IMU stream at each layer.
+# To run:
+#   python src/train.py experiment=cavio_visual_residual trainer=gpu
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: cavio_visual_residual
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "Visual Residual"]
+
+seed: 42
+
+model:
+  tester:
+    plot_label: "CAVIO Visual Residual"

@@ -1,0 +1,21 @@
+# @package _global_
+
+# Cross-Attention CAVIO with d_model = 512, d_ff = 1536.
+# To run:
+#   python src/train.py experiment=cross_attn_d512_ff1536
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: cavio
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "Cross-Attention", "d512", "d_ff1536"]
+
+seed: 42
+
+model:
+  net:
+    dim_feedforward: 1536
+  tester:
+    plot_label: "Cross-Attention (d_model=512, d_ff=1536)"

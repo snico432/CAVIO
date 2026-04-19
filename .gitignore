@@ -1,7 +1,7 @@
 # Data and logs
 data/
 logs/
-pretrained_model/
+pretrained_models/
 
 # Python
 __pycache__/

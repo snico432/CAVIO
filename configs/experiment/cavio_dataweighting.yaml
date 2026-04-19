@@ -1,0 +1,21 @@
+# @package _global_
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: cavio
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "Data Weighting"]
+
+seed: 42
+
+model:
+  criterion:
+    _target_: src.losses.weighted_loss.DataWeightedRPMGPoseLoss
+    base_loss_fn:
+      _target_: torch.nn.L1Loss
+      reduction: none
+    angle_weight: 25
+  tester:
+    plot_label: "CAVIO Data Weighting"

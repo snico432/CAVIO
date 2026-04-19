@@ -1,0 +1,26 @@
+# @package _global_
+
+# CAVIO d_model=512, d_ff=1024; FFN dropout 0.05; attn/residual dropout 0.
+# To run:
+#   python src/train.py experiment=cavio_d512_ff1024_do005
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: cavio
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "d512", "d_ff1024", "ffn_dropout0.05"]
+
+seed: 42
+
+model:
+  net:
+    embedding_dim: 512
+    nhead: 8
+    dim_feedforward: 1024
+    attn_dropout: 0.0
+    residual_dropout: 0.0
+    ffn_dropout: 0.05
+  tester:
+    plot_label: "CAVIO (d=512, d_ff=1024, ffn_dropout=0.05)"

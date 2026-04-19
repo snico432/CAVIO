@@ -110,31 +110,55 @@ class DataWeightedPoseLoss(nn.Module):
         return total_loss.mean()
 
 class CustomWeightedPoseLoss(nn.Module):
-    def __init__(self, base_loss_fn, angle_weight=100):
+    """
+    Per-channel L1 (via ``base_loss_fn``) on ``[euler×3, t×3]``.
+
+    Defaults: uniform rotation weights; translation weights uniform on X/Z with a higher
+    weight on Y (index 4), i.e. vertical / out-of-plane vs a typical KITTI X–Z path.
+
+    Combined as ``angle_weight * mean(rot) + mean(trans)`` so it lines up with
+    :class:`RPMGPoseLoss` (rotation block scaled, then translation block).
+
+    ``weights`` / ``use_weighted_loss`` are accepted for API compatibility with
+    :class:`WeightedVIOLitModule` but LDS-style sample weighting is not applied here.
+    """
+
+    def __init__(
+        self,
+        base_loss_fn,
+        angle_weight: float = 25.0,
+        rot_w=(1.0, 1.0, 1.0),
+        trans_w=(1.0, 2.5, 1.0),
+    ):
         super().__init__()
         self.base_loss_fn = base_loss_fn
         self.angle_weight = angle_weight
+        self.rot_w = tuple(float(x) for x in rot_w)
+        self.trans_w = tuple(float(x) for x in trans_w)
+        if len(self.rot_w) != 3 or len(self.trans_w) != 3:
+            raise ValueError("rot_w and trans_w must each have length 3.")
 
     def forward(self, poses, gts, weights=None, use_weighted_loss=True):
-        batch_size, seq_len, _ = poses.shape
-        loss1 = self.base_loss_fn(poses[:,:,0], gts[:,:,0])
-        loss2 = self.base_loss_fn(poses[:,:,1], gts[:,:,1])
-        loss3 = self.base_loss_fn(poses[:,:,2], gts[:,:,2])
-        loss4 = self.base_loss_fn(poses[:,:,3], gts[:,:,3])
-        loss5 = self.base_loss_fn(poses[:,:,4], gts[:,:,4])
-        loss6 = self.base_loss_fn(poses[:,:,5], gts[:,:,5])
+        loss1 = self.base_loss_fn(poses[:, :, 0], gts[:, :, 0])
+        loss2 = self.base_loss_fn(poses[:, :, 1], gts[:, :, 1])
+        loss3 = self.base_loss_fn(poses[:, :, 2], gts[:, :, 2])
+        loss4 = self.base_loss_fn(poses[:, :, 3], gts[:, :, 3])
+        loss5 = self.base_loss_fn(poses[:, :, 4], gts[:, :, 4])
+        loss6 = self.base_loss_fn(poses[:, :, 5], gts[:, :, 5])
 
-        total_loss = loss1 * (2/3) + loss2 * (1/5) + loss3 + loss4 * (0.1) + loss5 * (0.1) + loss6 * (0.03)
- 
-        if use_weighted_loss and (weights is not None):
-            # Normalize weights
-            weights = weights / weights.sum()
-            weights = weights.view(-1, 1, 1)  # reshape to (batch_size, 1, 1)
-            
-            # Apply weights
-            total_loss = weights * total_loss.sum(dim=(1)).view(-1, 1, 1)
-        
-        return total_loss.mean()
+        r_sum = sum(self.rot_w)
+        t_sum = sum(self.trans_w)
+        rot_term = (
+            self.rot_w[0] * loss1 + self.rot_w[1] * loss2 + self.rot_w[2] * loss3
+        ) / r_sum
+        trans_term = (
+            self.trans_w[0] * loss4 + self.trans_w[1] * loss5 + self.trans_w[2] * loss6
+        ) / t_sum
+
+        total_loss = self.angle_weight * rot_term + trans_term
+        self.angle_loss = rot_term.detach()
+        self.translation_loss = trans_term.detach()
+        return total_loss
 
 
 class AngleWeightedPoseLoss(nn.Module):

@@ -16,4 +16,11 @@ seed: 42
 
 model:
   tester:
-    plot_label: "CAVIO Baseline"
+    plot_label: "CAVIO Baseline (d_model=768, d_ff=128)"
+  net:
+    embedding_dim: 768 # Same embedding dim as VIFT
+    nhead: 6 # Same nhead as VIFT
+    dim_feedforward: 128 # Same dim_feedforward as VIFT
+
+  criterion:
+    angle_weight: 40 # Same angle weight as VIFT
