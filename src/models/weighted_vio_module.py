@@ -39,6 +39,11 @@ class WeightedVIOLitModule(LightningModule):
         if hasattr(self.criterion, 'angle_loss'):
             self.log("train/L_rot", self.criterion.angle_loss, on_step=True, on_epoch=True)
             self.log("train/L_trans", self.criterion.translation_loss, on_step=True, on_epoch=True)
+        if hasattr(self.criterion, "effective_angle_weight"):
+            self.log("train/w_rot", self.criterion.effective_angle_weight, on_step=True, on_epoch=True)
+            self.log("train/w_trans", self.criterion.effective_translation_weight, on_step=True, on_epoch=True)
+        if hasattr(self.criterion, "weighted_task_loss"):
+            self.log("train/loss_weighted_tasks", self.criterion.weighted_task_loss, on_step=True, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -51,6 +56,11 @@ class WeightedVIOLitModule(LightningModule):
         if hasattr(self.criterion, 'angle_loss'):
             self.log("val/L_rot", self.criterion.angle_loss, on_step=False, on_epoch=True)
             self.log("val/L_trans", self.criterion.translation_loss, on_step=False, on_epoch=True)
+        if hasattr(self.criterion, "effective_angle_weight"):
+            self.log("val/w_rot", self.criterion.effective_angle_weight, on_step=False, on_epoch=True)
+            self.log("val/w_trans", self.criterion.effective_translation_weight, on_step=False, on_epoch=True)
+        if hasattr(self.criterion, "weighted_task_loss"):
+            self.log("val/loss_weighted_tasks", self.criterion.weighted_task_loss, on_step=False, on_epoch=True)
         return loss
 
     def test_step(self, batch, batch_idx):

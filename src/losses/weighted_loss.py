@@ -1,7 +1,20 @@
+import math
+
 import torch
 import torch.nn as nn
 from src.utils.kitti_utils import eulerAnglesToRotationMatrixTorch as etr
 from src.utils import rpmg
+
+
+def _compute_rpmg_rotation_loss(poses, gts):
+    return torch.nn.functional.l1_loss(
+        rpmg.simple_RPMG.apply(
+            etr(poses[:, :, :3]).view(poses.shape[0] * poses.shape[1], 9),
+            1 / 4,
+            0.01,
+        ).view(-1, 9),
+        etr(gts[:, :, :3]).view(poses.shape[0] * poses.shape[1], 9),
+    )
 
 class WeightedMSEPoseLoss(nn.Module):
     def __init__(self, angle_weight=100):
@@ -36,22 +49,43 @@ class LieTorchPoseLoss(nn.Module):
         pass
 
 class RPMGPoseLoss(nn.Module):
-    def __init__(self, base_loss_fn, angle_weight=100):
+    def __init__(self, base_loss_fn, angle_weight=100, learnable_angle_weight=False):
         super().__init__()
-        self.angle_weight = angle_weight
-    def forward(self, poses, gts, weights, use_weighted_loss=True):
-        angle_loss = torch.nn.functional.l1_loss(
-            rpmg.simple_RPMG.apply(
-                                   etr(poses[:,:,:3]).view(poses.shape[0]*poses.shape[1],9),
-                                   1/4,
-                                   0.01
-                                   ).view(-1,9),
-            etr(gts[:,:,:3]).view(poses.shape[0]*poses.shape[1],9)
-        )
-        
-        translation_loss = torch.nn.functional.l1_loss(poses[:,:,3:], gts[:, :, 3:])
-        
-        pose_loss = self.angle_weight * angle_loss + translation_loss
+        del base_loss_fn  # kept for config compatibility with existing loss definitions
+        self.learnable_angle_weight = learnable_angle_weight
+        if learnable_angle_weight:
+            self.log_vars = nn.Parameter(
+                torch.tensor([-math.log(float(angle_weight)), 0.0], dtype=torch.float32)
+            )
+        else:
+            self.angle_weight = angle_weight
+
+    def forward(self, poses, gts, weights=None, use_weighted_loss=True):
+        del weights, use_weighted_loss
+        angle_loss = _compute_rpmg_rotation_loss(poses, gts)
+        translation_loss = torch.nn.functional.l1_loss(poses[:, :, 3:], gts[:, :, 3:])
+
+        if self.learnable_angle_weight:
+            log_var_rot, log_var_trans = self.log_vars[0], self.log_vars[1]
+            weight_rot = torch.exp(-log_var_rot)
+            weight_trans = torch.exp(-log_var_trans)
+            pose_loss = (
+                weight_rot * angle_loss
+                + log_var_rot
+                + weight_trans * translation_loss
+                + log_var_trans
+            )
+            self.effective_angle_weight = weight_rot.detach()
+            self.effective_translation_weight = weight_trans.detach()
+            self.weighted_task_loss = (
+                weight_rot * angle_loss + weight_trans * translation_loss
+            ).detach()
+        else:
+            pose_loss = self.angle_weight * angle_loss + translation_loss
+            self.effective_angle_weight = None
+            self.effective_translation_weight = None
+            self.weighted_task_loss = None
+
         self.angle_loss = angle_loss.detach()
         self.translation_loss = translation_loss.detach()
         return pose_loss

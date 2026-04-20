@@ -11,6 +11,9 @@ from src.losses.weighted_loss import (
     DataWeightedRPMGPoseLoss,
     RPMGPoseLoss,
 )
+from src.models.components.bidirectional_cross_attn import (
+    BidirectionalCrossAttentionPoseTransformer,
+)
 from src.models.components.cavio import CAVIOPoseTransformer
 from src.models.components.cavio_gated import GatedCAVIOPoseTransformer
 from src.models.components.cavio_visual_residual import VisualResidualCAVIOPoseTransformer
@@ -33,6 +36,7 @@ def register_safe_globals() -> None:
             RPMGPoseLoss,
             DataWeightedRPMGPoseLoss,
             CustomWeightedPoseLoss,
+            BidirectionalCrossAttentionPoseTransformer,
             CAVIOPoseTransformer,
             GatedCAVIOPoseTransformer,
             VisualResidualCAVIOPoseTransformer,

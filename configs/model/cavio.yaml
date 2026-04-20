@@ -17,6 +17,7 @@ criterion:
     _target_: torch.nn.L1Loss
     reduction: none
   angle_weight: 25
+  learnable_angle_weight: false
 
 net:
   _target_: src.models.components.cavio.CAVIOPoseTransformer
