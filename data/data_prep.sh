@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# KITTI odometry download and layout under `kitti_data/`. Same pipeline as VIFT
+# `data/data_prep.sh` (https://github.com/ybkurt/vift); CAVIO uses `bash` for the shebang.
 
 wget -c https://s3.eu-central-1.amazonaws.com/avg-kitti/data_odometry_color.zip    # download the KITTI ODOMETRY dataset
 unzip data_odometry_color.zip
