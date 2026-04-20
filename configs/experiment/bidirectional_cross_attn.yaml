@@ -1,0 +1,20 @@
+# @package _global_
+
+# Bidirectional cross-attention: both modalities are projected to 512, attend to each other,
+# concatenated, and forwarded as a fused token stream to the next layer.
+# To run:
+#   python src/train.py experiment=bidirectional_cross_attn trainer=gpu
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: bidirectional_cross_attn
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "Bidirectional Cross-Attention"]
+
+seed: 42
+
+model:
+  tester:
+    plot_label: "Bidirectional Cross-Attention"

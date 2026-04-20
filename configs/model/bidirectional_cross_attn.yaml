@@ -1,0 +1,51 @@
+_target_: src.models.weighted_vio_module.WeightedVIOLitModule
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 0.0001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
+  _partial_: true
+  T_0: 25
+  T_mult: 1
+
+criterion:
+  _target_: src.losses.weighted_loss.RPMGPoseLoss
+  base_loss_fn:
+    _target_: torch.nn.L1Loss
+    reduction: none
+  angle_weight: 25
+  learnable_angle_weight: false
+
+net:
+  _target_: src.models.components.bidirectional_cross_attn.BidirectionalCrossAttentionPoseTransformer
+  input_dim: 768
+  embedding_dim: 512
+  num_layers: 4
+  nhead: 8
+  dim_feedforward: 1024
+  attn_dropout: 0.0
+  residual_dropout: 0.0
+  ffn_dropout: 0.0
+  return_attention_weights: False
+
+tester:
+  _target_: src.testers.latent_kitti_eval_harness.LatentKittiEvalHarness
+  val_seqs: ['05','07', '10']
+  data_dir: ${paths.data_dir}/kitti_data
+  seq_len: 11
+  folder: sequences
+  img_w: 512
+  img_h: 256
+  wrapper_weights_path: ${paths.root_dir}/pretrained_models/vf_512_if_256_3e-05.model
+  device: 'cuda'
+  v_f_len: 512
+  i_f_len: 256
+  use_history_in_eval: True
+  plot_label: ???
+  plot_speed: false
+  save_poses: false
+
+compile: true

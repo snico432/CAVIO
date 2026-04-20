@@ -1,0 +1,26 @@
+# @package _global_
+
+# Bidirectional cross-attention with Kendall-style learned rotation/translation weighting.
+# To run:
+#   python src/train.py experiment=bidirectional_cross_attn_kendall trainer=gpu
+
+defaults:
+  - override /data: latent_kitti_vio
+  - override /model: bidirectional_cross_attn
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["CAVIO", "Bidirectional Cross-Attention", "Kendall Loss"]
+
+seed: 42
+
+model:
+  criterion:
+    _target_: src.losses.weighted_loss.RPMGPoseLoss
+    base_loss_fn:
+      _target_: torch.nn.L1Loss
+      reduction: none
+    angle_weight: 25
+    learnable_angle_weight: true
+  tester:
+    plot_label: "Bidirectional Cross-Attention + Kendall"
