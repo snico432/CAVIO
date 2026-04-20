@@ -1,8 +1,11 @@
 # @package _global_
+#
+# CAVIO-only experiment preset (same Hydra override role as VIFT `configs/experiment/*.yaml`;
+# https://github.com/ybkurt/vift). Not present in upstream VIFT.
 
-# CrossAttnPoseTransformer: IMU cross-attends to visual, ffn_cross, then IMU self-attn + FFN.
-# To run:
-#   python src/train.py experiment=cross_attn_extra_ffn
+# CAVIOPoseTransformer baseline with VIFT-like widths: d_model=768, d_ff=128, nhead=6, angle_weight=40.
+# To run (from repo root):
+#   python src/train.py experiment=cavio_baseline trainer=gpu
 
 defaults:
   - override /data: latent_kitti_vio

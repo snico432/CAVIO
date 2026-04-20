@@ -1,3 +1,10 @@
+# CAVIO model group (not in upstream VIFT). Field layout matches VIFT’s `configs/model/*.yaml`
+# pattern (optimizer, scheduler, criterion, net, tester, compile) from
+# https://github.com/ybkurt/vift — targets and hyperparameters are CAVIO-specific.
+#
+# Runtime: default `model` in `configs/train.yaml` is `cavio`. Run training from repo root with
+# `python src/train.py trainer=gpu`, or set `model=cavio trainer=gpu` / `experiment=... trainer=gpu`.
+
 _target_: src.models.weighted_vio_module.WeightedVIOLitModule
 
 optimizer:

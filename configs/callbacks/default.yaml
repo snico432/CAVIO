@@ -1,3 +1,6 @@
+# Adapted from VIFT (https://github.com/ybkurt/vift) `configs/callbacks/default.yaml`.
+# CAVIO: `early_stopping` is not included in this defaults group (use `callbacks/early_stopping.yaml` explicitly).
+
 defaults:
   - model_checkpoint
   - model_summary

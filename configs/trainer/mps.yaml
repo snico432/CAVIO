@@ -1,3 +1,5 @@
+# Adapted from VIFT `configs/trainer/mps.yaml`. CAVIO: `devices` omitted (Lightning default).
+
 defaults:
   - default
 

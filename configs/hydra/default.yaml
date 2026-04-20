@@ -1,4 +1,6 @@
 # https://hydra.cc/docs/configure_hydra/intro/
+#
+# Unchanged from VIFT (https://github.com/ybkurt/vift) `configs/hydra/default.yaml`.
 
 # enable color logging
 defaults:

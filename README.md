@@ -34,9 +34,9 @@ pip install -r requirements.txt
 The main training config is `configs/train.yaml`, which composes:
 
 - `data: latent_kitti_vio`
-- `model: latent_cross_attn_vio`
+- `model: cavio`
 - `logger: many_loggers`
-- `trainer: default`
+- `trainer: default` (use `trainer=gpu` on the CLI for GPU; see `configs/trainer/gpu.yaml`)
 
 Evaluation config is `configs/eval.yaml`.
 
@@ -45,14 +45,14 @@ Evaluation config is `configs/eval.yaml`.
 Run training (and test afterwards if `test: True`):
 
 ```bash
-python src/train.py
+python src/train.py trainer=gpu
 ```
 
 Common overrides:
 
 ```bash
 python src/train.py trainer=gpu seed=42
-python src/train.py train=False test=True ckpt_path=/path/to/checkpoint.ckpt
+python src/train.py trainer=gpu train=False test=True ckpt_path=/path/to/checkpoint.ckpt
 ```
 
 ## Evaluate
@@ -60,7 +60,7 @@ python src/train.py train=False test=True ckpt_path=/path/to/checkpoint.ckpt
 Evaluate a checkpoint:
 
 ```bash
-python src/eval.py ckpt_path=/path/to/checkpoint.ckpt
+python src/eval.py trainer=gpu ckpt_path=/path/to/checkpoint.ckpt
 ```
 
 ## Outputs

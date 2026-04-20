@@ -1,3 +1,6 @@
+# Adapted from VIFT (https://github.com/ybkurt/vift) `configs/trainer/default.yaml`.
+# CAVIO: longer default training horizon (`min_epochs`/`max_epochs`), `log_every_n_steps: 1`.
+
 _target_: lightning.pytorch.trainer.Trainer
 
 default_root_dir: ${paths.output_dir}

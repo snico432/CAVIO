@@ -1,7 +1,10 @@
 # @package _global_
+#
+# CAVIO-only experiment preset (same Hydra override role as VIFT `configs/experiment/*.yaml`;
+# https://github.com/ybkurt/vift). Not present in upstream VIFT.
 
-# Per-axis pose loss: uniform rotation; translation X/Z uniform, Y (vertical) weighted higher.
-# To run:
+# Default CAVIOPoseTransformer with `CustomWeightedPoseLoss` (higher weight on vertical translation).
+# To run (from repo root):
 #   python src/train.py experiment=cavio_custom_pose_loss trainer=gpu
 
 defaults:

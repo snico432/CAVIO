@@ -1,3 +1,7 @@
+# CAVIO model group (not in upstream VIFT). Same config shape as `model/cavio.yaml`; see there.
+#
+# Runtime: `python src/train.py model=imu_only trainer=gpu` or `experiment=imu_only trainer=gpu`.
+
 _target_: src.models.weighted_vio_module.WeightedVIOLitModule
 
 optimizer:

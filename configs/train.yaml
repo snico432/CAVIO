@@ -1,4 +1,8 @@
 # @package _global_
+#
+# Training entry defaults. Structure follows the VIFT Hydra layout
+# (https://github.com/ybkurt/vift). CAVIO changes: default model `cavio`, logger
+# `many_loggers`, no bundled `optional local` / `debug` defaults (enable via CLI if needed).
 
 # specify here default configuration
 # order of defaults determines the order in which configs override each other
@@ -25,7 +29,7 @@ task_name: "train"
 
 # tags to help you identify your experiments
 # you can overwrite this in experiment configs
-# overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
+# overwrite from command line with `python src/train.py trainer=gpu tags="[first_tag, second_tag]"`
 # tags: ["dev"]
 
 # set False to skip model training

@@ -1,4 +1,6 @@
 # https://www.tensorflow.org/tensorboard/
+#
+# Unchanged from VIFT `configs/logger/tensorboard.yaml`.
 
 tensorboard:
   _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger

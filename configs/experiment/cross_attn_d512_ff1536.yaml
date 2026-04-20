@@ -1,8 +1,11 @@
 # @package _global_
+#
+# CAVIO-only experiment preset (same Hydra override role as VIFT `configs/experiment/*.yaml`;
+# https://github.com/ybkurt/vift). Not present in upstream VIFT.
 
-# Cross-Attention CAVIO with d_model = 512, d_ff = 1536.
-# To run:
-#   python src/train.py experiment=cross_attn_d512_ff1536
+# CAVIO with d_model=512 (from `model/cavio`); only `dim_feedforward` swept to 1536.
+# To run (from repo root):
+#   python src/train.py experiment=cross_attn_d512_ff1536 trainer=gpu
 
 defaults:
   - override /data: latent_kitti_vio

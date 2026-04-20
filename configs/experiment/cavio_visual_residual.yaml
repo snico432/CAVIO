@@ -1,8 +1,10 @@
 # @package _global_
+#
+# CAVIO-only experiment preset (same Hydra override role as VIFT `configs/experiment/*.yaml`;
+# https://github.com/ybkurt/vift). Not present in upstream VIFT.
 
-# VisualResidual CAVIO: gated CAVIO with an additional learned visual residual
-# injected directly into the IMU stream at each layer.
-# To run:
+# VisualResidualCAVIOPoseTransformer: learned visual residual injected into the IMU stream each layer.
+# To run (from repo root):
 #   python src/train.py experiment=cavio_visual_residual trainer=gpu
 
 defaults:

@@ -1,4 +1,11 @@
 # @package _global_
+#
+# CAVIO-only experiment preset (same Hydra override role as VIFT `configs/experiment/*.yaml`;
+# https://github.com/ybkurt/vift). Not present in upstream VIFT.
+
+# Same `CAVIOPoseTransformer` as default `model/cavio`, but criterion uses `DataWeightedRPMGPoseLoss`.
+# To run (from repo root):
+#   python src/train.py experiment=cavio_dataweighting trainer=gpu
 
 defaults:
   - override /data: latent_kitti_vio

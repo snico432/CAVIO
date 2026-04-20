@@ -1,3 +1,7 @@
+# Adapted from VIFT (https://github.com/ybkurt/vift) `configs/data/latent_kitti_vio.yaml`.
+# Same `VIODataModule` wiring pattern; CAVIO uses cached latent datasets and paths under
+# `kitti_latent_data/train` & `val`, larger `batch_size`, `num_workers: 8`.
+
 _target_: src.data.vio_datamodule.VIODataModule
 batch_size: 128 # Needs to be divisible by the number of devices (e.g., if in a distributed setup)
 num_workers: 8 # Adjust based on the number of available CPU cores

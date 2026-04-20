@@ -1,8 +1,11 @@
 # @package _global_
+#
+# CAVIO-only experiment preset (same Hydra override role as VIFT `configs/experiment/*.yaml`;
+# https://github.com/ybkurt/vift). Not present in upstream VIFT.
 
-# IMUOnlyPoseTransformer: causal self-attention on IMU latent tokens (visual latents in the batch are ignored).
-# To run:
-#   python src/train.py experiment=imu_only_baseline
+# IMUOnlyPoseTransformer: causal self-attention on IMU tokens (visual latents in the batch are ignored).
+# To run (from repo root):
+#   python src/train.py experiment=imu_only trainer=gpu
 
 defaults:
   - override /data: latent_kitti_vio

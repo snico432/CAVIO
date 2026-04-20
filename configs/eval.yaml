@@ -1,4 +1,11 @@
 # @package _global_
+#
+# Evaluation entry. Extends the VIFT eval pattern (https://github.com/ybkurt/vift):
+# adds `callbacks` and `experiment` defaults so overrides compose like `train.yaml`,
+# and `model.tester` options for latent KITTI plots.
+#
+# GPU: includes `trainer: default` in defaults; run with e.g.
+#   python src/eval.py trainer=gpu ckpt_path=...
 
 defaults:
   - _self_

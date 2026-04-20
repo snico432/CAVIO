@@ -1,8 +1,11 @@
 # @package _global_
+#
+# CAVIO-only experiment preset (same Hydra override role as VIFT `configs/experiment/*.yaml`;
+# https://github.com/ybkurt/vift). Not present in upstream VIFT.
 
-# Gated CAVIO: same stack as CAVIO (cross-attn -> self-attn -> FFN), with learnable
-# per-layer tanh gates on the cross-attention and FFN residual paths (alpha init 0).
-# To run:
+# GatedCAVIOPoseTransformer: cross-attn -> self-attn -> FFN with learnable per-layer tanh gates
+# on cross-attention and FFN residuals (alpha init 0).
+# To run (from repo root):
 #   python src/train.py experiment=gated_cavio trainer=gpu
 
 defaults:

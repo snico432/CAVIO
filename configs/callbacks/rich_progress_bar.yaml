@@ -1,4 +1,6 @@
 # https://lightning.ai/docs/pytorch/latest/api/lightning.pytorch.callbacks.RichProgressBar.html
+#
+# Unchanged from VIFT `configs/callbacks/rich_progress_bar.yaml`.
 
 rich_progress_bar:
   _target_: lightning.pytorch.callbacks.RichProgressBar

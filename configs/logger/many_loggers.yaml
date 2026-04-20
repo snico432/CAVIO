@@ -1,4 +1,7 @@
 # train with many loggers at once
+#
+# Adapted from VIFT `configs/logger/many_loggers.yaml`. CAVIO: csv + tensorboard only
+# (no wandb / other third-party loggers in this group).
 
 defaults:
   - csv
