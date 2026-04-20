@@ -1,7 +1,15 @@
-"""Latent KITTI trajectory evaluation: encoder + per-sequence windowed inference loops.
+"""Latent KITTI trajectory evaluation: frozen encoder + windowed pose inference + metrics.
 
-``LatentKittiEvalRunner`` / ``LatentKittiEvalRunnerTokenized`` hold the eval logic.
-Lightning wiring lives in ``LatentKittiEvalHarness`` (``latent_kitti_eval_harness.py``).
+Parallel to VIFT ``KITTI_tester_latent`` in ``src/utils/kitti_latent_eval.py`` and the
+eval path in ``kitti_eval.py`` (https://github.com/ybkurt/vift). CAVIO factors the loop
+into this module plus ``KittiEvalSequenceDataset`` (``kitti_eval_sequence_dataset.py``),
+``src/metrics/kitti_metrics.py`` instead of duplicating ``kitti_eval`` inline, and
+``src/utils/plotting/kitti_traj_plotting`` for figures.
+
+``LatentKittiEvalRunner`` / ``LatentKittiEvalRunnerTokenized`` implement the eval logic;
+Lightning wiring lives in ``latent_kitti_eval_harness.py``. Dataset class lives under
+``src/data/components/kitti_eval_sequence_dataset.py`` (VIFT keeps similar slicing in
+``kitti_eval.py`` ``data_partition``).
 """
 
 from pathlib import Path

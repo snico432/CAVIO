@@ -1,3 +1,9 @@
+"""Abstract tester interface (shared with VIFT ``src/testers/base_tester.py``).
+
+https://github.com/ybkurt/vift — same ``test`` / ``save_results`` contract; concrete testers
+implement latent or raw-KITTI evaluation.
+"""
+
 from abc import ABC, abstractmethod
 import torch
 from typing import List, Dict, Any

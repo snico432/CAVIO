@@ -1,3 +1,13 @@
+"""Lightning-facing tester: latent KITTI eval using ``LatentKittiEvalRunner``.
+
+Evolves VIFT ``KITTILatentTester`` (``src/testers/kitti_latent_tester.py``,
+https://github.com/ybkurt/vift), which delegated to ``KITTI_tester_latent`` in
+``kitti_latent_eval``. CAVIO uses ``LatentKittiEvalRunner`` with
+``compute_kitti_odometry_metrics`` (``src/metrics/kitti_metrics.py``), optional plots,
+``error_metrics.json``, and ``save_results(..., error_metrics, save_dir)`` — the extra
+``error_metrics`` argument matches ``WeightedVIOLitModule.on_test_epoch_end``.
+"""
+
 from dataclasses import dataclass
 import os
 from typing import Any, Dict
