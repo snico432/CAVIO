@@ -11,50 +11,16 @@ VIFT repository: [https://github.com/ybkurt/vift](https://github.com/ybkurt/vift
 
 ## Where to review the project work (CAVIO-specific)
 
-The training stack, data loading pattern, pretrained Visual-Selective-VIO encoder, and much of the KITTI/latent plumbing follow the VIFT-style layout above. The items below are the most direct locus of the **cross-attention VIO** work and related experiments—good starting points for code review or grading.
+Aside from the shared VIFT-style training shell, data layout, and pretrained encoder, the highest-impact paths for grading or code review are:
 
-### Cross-attention and ablation models
+- **`src/models/components/cavio.py`** — `CAVIOPoseTransformer` (cross-attention fusion + causal self-attention); the main architecture.
+- **`src/models/components/`** — Ablations: `cavio_gated.py`, `cavio_visual_residual.py`, `imu_only.py`.
+- **`src/losses/weighted_loss.py`** — RPMG pose losses and configurable `CustomWeightedPoseLoss` (used in α and axis-weighting experiments).
+- **`configs/model/`** and **`configs/experiment/`** — Hydra defaults and experiment presets; optional batch reruns via **`scripts/schedule_report.sh`**.
+- **`src/utils/plotting/`** — Training curves (`plot_train_losses.py`) and KITTI trajectory / speed figures (`kitti_traj_plotting.py`).
+- **`src/testers/latent_kitti_eval_runner.py`** and **`latent_kitti_eval_harness.py`** — Latent KITTI eval (encoder wrapper, metrics, plots from the Lightning test step).
 
-| Path | What it is |
-|------|------------|
-| `src/models/components/cavio.py` | `CAVIOPoseTransformer`: IMU queries visual latents, then causal self-attention (main CAVIO architecture). |
-| `src/models/components/cavio_gated.py` | Gated residuals on cross-attention and FFN branches. |
-| `src/models/components/cavio_visual_residual.py` | Extra learned visual residual into the IMU stream. |
-| `src/models/components/imu_only.py` | IMU-only self-attention ablation (no cross-attention to vision). |
-
-### Losses tied to those experiments
-
-| Path | What it is |
-|------|------------|
-| `src/losses/weighted_loss.py` | RPMG pose losses; **per-axis / configurable** `CustomWeightedPoseLoss` and related classes used in sweeps. |
-
-### Hydra configs for models and report experiments
-
-| Path | What it is |
-|------|------------|
-| `configs/model/cavio.yaml` | Default Lightning module + `CAVIOPoseTransformer` + tester wiring. |
-| `configs/model/imu_only.yaml` | IMU-only model group. |
-| `configs/model/cavio_visual_residual.yaml` | Visual-residual model group. |
-| `configs/experiment/` | Experiment presets (e.g. `cavio_baseline`, `cross_attn_d512_*`, dropout, `imu_only`, alpha sweeps via CLI). |
-| `scripts/schedule_report.sh` | Batch script aligned with the course report experiment table (optional). |
-
-### Plotting and evaluation outputs
-
-| Path | What it is |
-|------|------------|
-| `src/utils/plotting/plot_train_losses.py` | Train/val loss and component-loss figures from `metrics.csv` (written at end of fit). |
-| `src/utils/plotting/kitti_traj_plotting.py` | KITTI trajectory and speed plots during latent eval. |
-| `src/testers/latent_kitti_eval_runner.py` | Encoder wrapper + windowed inference + metrics for test-time evaluation. |
-| `src/testers/latent_kitti_eval_harness.py` | Tester object used by the Lightning module: calls the runner, writes `error_metrics.json`, optional pose dumps, plot orchestration. |
-
-### Other refactors worth skimming (supporting code, not the core architecture)
-
-| Path | What it is |
-|------|------------|
-| `src/metrics/kitti_metrics.py` | KITTI `t_rel` / `r_rel` / RMSE (logic parallel to VIFT `kitti_eval`, factored here). |
-| `src/utils/lit_hydra.py` | Shared Hydra instantiation for `train.py` and `eval.py`. |
-| `src/utils/safe_globals.py` | PyTorch 2 safe globals for checkpoint unpickling. |
-| `src/data/latent_caching.py` | One-shot latent caching for train/val splits. |
+For pipeline glue (KITTI metric definitions, Hydra wiring, latent caching, checkpoint safe globals), see `src/metrics/kitti_metrics.py`, `src/utils/lit_hydra.py`, `src/utils/safe_globals.py`, and `src/data/latent_caching.py`.
 
 ## Project Structure
 
@@ -120,6 +86,4 @@ Artifacts include:
 
 ## Notes
 
-- Training/validation component loss plots are generated automatically at fit end.
-- KITTI test metrics and trajectory plots are generated during test epoch end.
 - If you modify logger layout, keep CSV logging enabled so loss plotting can read `metrics.csv`.
