@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 """
-Download pretrained weights from Google Drive related to the following repo:
+Download the **Visual-Selective-VIO** frozen encoder weights from Google Drive:
 
-https://github.com/mingyuyng/Visual-Selective-VIO
+  https://github.com/mingyuyng/Visual-Selective-VIO
 
-using gdown.
+This is the same artifact the VIFT repository documents placing under ``pretrained_models/``
+manually (see https://github.com/ybkurt/vift); CAVIO automates the download with ``gdown``.
 
-Install:
-    pip install gdown
+Dependency (also listed in ``requirements.txt``):
 
-Default URL points to the weights also used in the VIFT paper.
-The file is saved under the chosen directory using **Google Drive's filename** (gdown default).
+  pip install gdown
 
-Keep ``model.tester.wrapper_weights_path`` in sync with that name (expected:
-``pretrained_models/vf_512_if_256_3e-05.model`` for the default URL).
+Behavior: by default, writes into **this script's directory** (the ``pretrained_models/`` folder
+next to this file). ``gdown`` keeps the **remote file name**; the default Drive link should
+produce ``vf_512_if_256_3e-05.model``. If the on-disk name differs, rename it or update
+``model.tester.wrapper_weights_path`` in ``configs/model/*.yaml`` (defaults use
+``${paths.root_dir}/pretrained_models/vf_512_if_256_3e-05.model``).
 
-Usage:
-    python download_model.py
-    python download_model.py -o /path/to/dir
-    python download_model.py --url "https://drive.google.com/file/d/FILE_ID/view?usp=sharing"
+From the **repository root**:
+
+  python pretrained_models/download_model.py
+  python pretrained_models/download_model.py -o /path/to/dir
+  python pretrained_models/download_model.py --url "https://drive.google.com/file/d/FILE_ID/view?usp=sharing"
 """
 
 import argparse
@@ -35,7 +38,9 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Download a file from Google Drive using gdown (remote filename preserved)."
+        description=(
+            "Download VS-VIO encoder weights from Google Drive (gdown; remote filename preserved)."
+        )
     )
     parser.add_argument(
         "--url",
