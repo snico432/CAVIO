@@ -1,4 +1,16 @@
-"""KITTI odometry evaluation: RMSE, relative error (t/r %), trajectory speed."""
+"""KITTI odometry metrics: RMSE, segment relative translation/rotation error, speed.
+
+The numerical pipeline matches VIFT ``kitti_eval`` and ``kitti_err_cal`` in
+``src/utils/kitti_eval.py`` (https://github.com/ybkurt/vift): accumulate relative
+poses with ``path_accu``, then evaluate 100--800\,m segments via
+``computeOverallErr``, with the same
+scaling of ``t_rel`` / ``r_rel`` / rotational RMSE as in VIFT.
+
+CAVIO exposes this logic as small functions in ``src/metrics/`` for the latent
+eval harness. VIFT additionally ships a class-based ``KITTIMetricsCalculator`` in
+``src/metrics/kitti_metrics_calculator.py`` (dict of multi-sequence results); that
+wrapper is not ported—callers here pass poses directly.
+"""
 
 import numpy as np
 
@@ -15,6 +27,8 @@ from src.utils.kitti_utils import (
 
 def compute_kitti_odometry_metrics(pose_est, pose_gt):
     """Integrate relative poses, then RMSE plus KITTI-style segment relative errors and speed.
+
+    Equivalent to VIFT ``kitti_eval`` (``src/utils/kitti_eval.py``).
 
     Args:
         pose_est: Estimated relative poses (same layout as ``pose_gt``).
@@ -39,6 +53,8 @@ def compute_kitti_odometry_metrics(pose_est, pose_gt):
 
 def compute_kitti_segment_errors(pose_est_mat, pose_gt_mat):
     """KITTI odometry benchmark: relative rotation/translation error over fixed path lengths.
+
+    Equivalent to VIFT ``kitti_err_cal`` (``src/utils/kitti_eval.py``).
 
     Returns per-segment error rows, aggregate t/r drift, and trajectory speed from GT.
     """

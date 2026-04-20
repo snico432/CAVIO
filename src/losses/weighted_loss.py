@@ -1,3 +1,16 @@
+"""Pose losses (weighted rotation/translation, RPMG, optional data weighting).
+
+Derived from VIFT ``src/metrics/weighted_loss.py`` (https://github.com/ybkurt/vift).
+CAVIO places this module under ``src/losses/`` and imports ``src.utils.*`` (VIFT used
+bare ``utils.*``). Core classes (:class:`WeightedMSEPoseLoss`, :class:`WeightedMAEPoseLoss`,
+:class:`RPMGPoseLoss`, :class:`DataWeightedRPMGPoseLoss`, etc.) follow the upstream layout.
+
+:class:`CustomWeightedPoseLoss` is **modified** in CAVIO: configurable ``rot_w`` /
+``trans_w`` and documented aggregation, replacing the fixed per-axis coefficients in VIFT.
+:class:`RPMGPoseLoss` additionally exposes ``angle_loss`` / ``translation_loss`` for logging
+in :class:`~src.models.weighted_vio_module.WeightedVIOLitModule`.
+"""
+
 import torch
 import torch.nn as nn
 from src.utils.kitti_utils import eulerAnglesToRotationMatrixTorch as etr
