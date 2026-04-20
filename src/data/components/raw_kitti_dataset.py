@@ -1,3 +1,9 @@
+"""Sliding-window raw KITTI image+IMU segments with rotation-based sample weights.
+
+Adapted from VIFT ``KITTI`` in ``src/data/components/KITTI_dataset.py``
+(https://github.com/ybkurt/vift); renamed ``RawKITTIDataset`` in CAVIO.
+"""
+
 import numpy as np
 from PIL import Image
 import torch

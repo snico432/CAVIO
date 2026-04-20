@@ -1,4 +1,9 @@
-"""Sliding-window raw KITTI sequences for offline eval testers (not Lightning training)."""
+"""Sliding-window raw KITTI sequences for offline eval testers (not Lightning training).
+
+CAVIO-specific module; conceptually overlaps sequence iteration used in VIFT latent
+evaluation (e.g. ``src/utils/kitti_latent_eval.py`` and related helpers at
+https://github.com/ybkurt/vift), factored here for the Lightning tester stack.
+"""
 
 import glob
 

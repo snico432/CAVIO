@@ -1,3 +1,9 @@
+"""Cached latent vectors (.npy shards) for KITTI training/eval.
+
+Equivalent to VIFT ``LatentVectorDataset`` in ``src/data/components/latent_kitti_dataset.py``
+(https://github.com/ybkurt/vift); renamed ``CachedKittiLatentDataset`` in CAVIO.
+"""
+
 import os
 import numpy as np
 import torch

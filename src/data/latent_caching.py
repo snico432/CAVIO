@@ -1,7 +1,11 @@
 """
 Cache visual+IMU latents from the pretrained Encoder for KITTI sequences.
 
-Writes both splits in one run (under the repo ``data/`` directory):
+Same role as VIFT ``data/latent_caching.py`` and ``data/latent_val_caching.py``
+(https://github.com/ybkurt/vift), consolidated here with argparse, ``rootutils``,
+and CAVIO paths under ``data/``.
+
+Writes both splits in one run:
 
   - train sequences -> data/kitti_latent_data/train/
   - val sequences   -> data/kitti_latent_data/val/

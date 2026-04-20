@@ -1,3 +1,9 @@
+"""Lightning datamodule: wires instantiated train/val/test ``Dataset``s into ``DataLoader``s.
+
+Adapted from VIFT ``src/data/vio_datamodule.py`` (https://github.com/ybkurt/vift);
+CAVIO updates the class docstring and omits the broken ``__main__`` stub from upstream.
+"""
+
 import torch
 from lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
