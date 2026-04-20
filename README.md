@@ -2,12 +2,14 @@
 
 Cross-Attention Visual-Inertial Odometry (CAVIO): a PyTorch Lightning + Hydra codebase for training and evaluating latent-space VIO models.
 
-## Acknowledgement
+## Acknowledgements
 
 This repository is heavily influenced by the VIFT repository design and workflow.  
 Many project patterns (training/eval structure, configuration style, and parts of the VIO pipeline) follow that prior codebase and are adapted here for CAVIO experiments.
 
 VIFT repository: [https://github.com/ybkurt/vift](https://github.com/ybkurt/vift)
+
+Development used [Cursor](https://cursor.com) (AI-assisted editing) for refactoring, documentation, and tooling; model design, experiments, and analysis are the author’s own.
 
 ## Where to review the project work (CAVIO-specific)
 
