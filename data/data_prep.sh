@@ -5,7 +5,7 @@
 
 wget -c https://s3.eu-central-1.amazonaws.com/avg-kitti/data_odometry_color.zip    # download the KITTI ODOMETRY dataset
 unzip data_odometry_color.zip
-mkdir kitti_data/sequences 
+mkdir kitti_data/sequences
 mv dataset/sequences/* kitti_data/sequences/
 rm -r dataset
 

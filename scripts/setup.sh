@@ -1,19 +1,20 @@
 #!/bin/bash
 
 ##########################################################################
-# Make sure to create a virtual environment and install the requirements #
-# before running this script                                             #
+# Prerequisites: create a venv, ``pip install -r requirements.txt``       #
+# (needs ``gdown`` for the encoder weights). Network access required.      #
+# System tools: ``wget`` and ``unzip`` for KITTI zips (large downloads).   #
 ##########################################################################
 
 set -euo pipefail
 
-# Run from repo root (CAVIO/) so paths work no matter where this is invoked from
+# Resolve CAVIO repo root so this works when invoked as ``bash scripts/setup.sh``
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$ROOT"
 
-# Download the pretrained model
+# Visual-Selective-VIO encoder checkpoint -> pretrained_models/ (see download_model.py)
 python3 ./pretrained_models/download_model.py
 
-# Download the KITTI dataset
-bash ./data/data_prep.sh
+# KITTI odometry color + poses -> data/kitti_data/ (VIFT-identical script; cwd must be data/)
+( cd "$ROOT/data" && bash ./data_prep.sh )
