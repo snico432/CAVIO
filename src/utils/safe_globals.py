@@ -1,4 +1,9 @@
-"""PyTorch 2.x: allow-list classes for unpickling Lightning checkpoints under ``weights_only=True``."""
+"""PyTorch 2.x: allow-list classes for unpickling Lightning checkpoints (``weights_only=True``).
+
+CAVIO-only: registers dataset, loss, model, and tester types used in checkpoints.
+Not present in VIFT (https://github.com/ybkurt/vift); call ``register_safe_globals()`` at
+process start from ``train.py`` / ``eval.py``.
+"""
 
 import functools
 

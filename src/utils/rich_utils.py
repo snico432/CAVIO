@@ -1,3 +1,8 @@
+"""Rich-based Hydra config printing and tag enforcement.
+
+Aligned with VIFT ``src/utils/rich_utils.py`` (https://github.com/ybkurt/vift).
+"""
+
 from pathlib import Path
 from typing import Sequence
 

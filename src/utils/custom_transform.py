@@ -1,3 +1,8 @@
+"""Image/IMU transforms for raw KITTI windows (Compose, resize, tensor).
+
+Aligned with VIFT ``src/utils/custom_transform.py`` (https://github.com/ybkurt/vift).
+"""
+
 from __future__ import division
 import torch
 import random

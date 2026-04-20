@@ -1,3 +1,9 @@
+"""Hydra task helpers: extras, metric lookup, ``@task_wrapper`` (Lightning-Hydra template).
+
+Aligned with VIFT ``src/utils/utils.py`` (https://github.com/ybkurt/vift) and the upstream
+Lightning-Hydra project template.
+"""
+
 import warnings
 from importlib.util import find_spec
 from typing import Any, Callable, Dict, Optional, Tuple

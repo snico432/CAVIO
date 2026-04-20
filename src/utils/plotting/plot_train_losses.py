@@ -5,6 +5,9 @@ Plot training and validation loss curves from the Lightning CSVLogger metrics.cs
 Produces two PNGs:
   - loss_plot.png: combined train/val loss
   - component_loss_plot.png: translation and weighted rotation component curves (train/val)
+
+CAVIO-specific; invoked from ``WeightedVIOLitModule.on_fit_end``. Not in upstream VIFT
+(https://github.com/ybkurt/vift).
 """
 
 import csv

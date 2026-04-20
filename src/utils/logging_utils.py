@@ -1,3 +1,8 @@
+"""Log selected hyperparameters to Lightning experiment loggers.
+
+Aligned with VIFT ``src/utils/logging_utils.py`` (https://github.com/ybkurt/vift).
+"""
+
 from typing import Any, Dict
 
 from lightning_utilities.core.rank_zero import rank_zero_only

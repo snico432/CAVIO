@@ -1,3 +1,8 @@
+"""KITTI odometry helpers: poses, trajectories, RMSE, file IO.
+
+Aligned with VIFT ``src/utils/kitti_utils.py`` (https://github.com/ybkurt/vift).
+"""
+
 import os
 import glob
 import numpy as np

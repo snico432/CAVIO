@@ -1,7 +1,8 @@
-# This file contains code derived from the RPMG 
+# This file contains code derived from the RPMG
 # RPMG is licensed under CC BY-NC 4.0, see https://creativecommons.org/licenses/by-nc/4.0/
 # Original source: https://github.com/JYChen18/RPMG
-
+#
+# Same module path as VIFT ``src/utils/rpmg.py`` (https://github.com/ybkurt/vift).
 
 import torch
 

@@ -1,3 +1,8 @@
+"""Rank-aware CLI logging for Lightning (DDP-safe).
+
+Aligned with VIFT ``src/utils/pylogger.py`` (https://github.com/ybkurt/vift).
+"""
+
 import logging
 from typing import Mapping, Optional
 

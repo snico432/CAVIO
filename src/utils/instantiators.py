@@ -1,3 +1,8 @@
+"""Instantiate Lightning callbacks and loggers from Hydra configs.
+
+Aligned with VIFT ``src/utils/instantiators.py`` (https://github.com/ybkurt/vift).
+"""
+
 from typing import List
 
 import hydra

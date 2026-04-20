@@ -1,4 +1,10 @@
-"""Shared Hydra + Lightning instantiation for train and eval entrypoints."""
+"""Shared Hydra + Lightning instantiation for train and eval entrypoints.
+
+CAVIO-specific factoring so ``train.py`` and ``eval.py`` share ``build_lit_stack`` /
+``maybe_log_hyperparameters``. VIFT inlines similar wiring in entry scripts
+(https://github.com/ybkurt/vift); behavior is equivalent aside from eval optionally
+omitting callbacks.
+"""
 
 from typing import Any, Dict, List, Tuple
 

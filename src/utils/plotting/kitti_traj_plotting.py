@@ -1,4 +1,8 @@
-"""Matplotlib plots for KITTI eval: top-down X–Z path and speed heatmap."""
+"""Matplotlib plots for KITTI eval: top-down X–Z path and speed heatmap.
+
+Same role as trajectory plotting in VIFT ``src/utils/kitti_eval.py`` (``plotPath_2D``, etc.),
+https://github.com/ybkurt/vift; refactored here for the latent eval runner.
+"""
 
 from __future__ import annotations
 
