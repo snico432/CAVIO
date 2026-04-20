@@ -1,3 +1,13 @@
+"""Lightning module for latent VIO training and KITTI evaluation.
+
+Adapted from VIFT ``src/models/weighted_vio_module.py`` (https://github.com/ybkurt/vift).
+CAVIO drops the optional ``metrics_calculator`` dependency (VIFT wires
+``KITTIMetricsCalculator`` in ``on_test_epoch_end``); instead the custom tester returns
+flat ``error_metrics`` and results paths. CAVIO adds rotation/translation loss logging when
+the criterion exposes ``angle_loss`` / ``translation_loss``, ``on_fit_end`` CSV loss plots,
+and broader ``torch.compile`` handling in ``setup`` (including validate/predict/test).
+"""
+
 from pathlib import Path
 
 import torch

@@ -1,6 +1,11 @@
 """
-Visual + inertial encoder for latent features (architecture from Visual-Selective-VIO).
+Visual + inertial encoder for latent features (Visual-Selective-VIO architecture).
+
 https://github.com/mingyuyng/Visual-Selective-VIO/tree/main
+
+VIFT loads the same style of encoder from ``components/vsvio.py`` for raw KITTI caching;
+CAVIO uses this ``vio_encoder`` module for ``latent_caching.py`` and eval wrappers, with
+imports under ``src.models.components``.
 """
 import torch
 import torch.nn as nn

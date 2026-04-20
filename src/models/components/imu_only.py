@@ -1,3 +1,5 @@
+"""IMU-only self-attention pose head (CAVIO ablation); not in upstream VIFT."""
+
 from torch import nn
 import torch
 import math

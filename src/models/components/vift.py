@@ -1,3 +1,11 @@
+"""Minimal VIFT-style causal transformer head over concatenated visual+IMU latents.
+
+:class:`PoseTransformer` matches the core of VIFT ``components/pose_transformer.py``
+(https://github.com/ybkurt/vift): linear embed, sinusoidal position, causal
+``TransformerEncoder``, 6-DoF head. The upstream file may contain additional variants;
+this repo keeps a small copy for compatibility (e.g. ``safe_globals``).
+"""
+
 from torch import nn
 import torch
 import math

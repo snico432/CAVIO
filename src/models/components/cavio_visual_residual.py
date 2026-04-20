@@ -1,3 +1,5 @@
+"""Visual-residual gated CAVIO variant; CAVIO-specific, not in upstream VIFT."""
+
 from torch import nn
 import torch
 import math

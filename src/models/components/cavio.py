@@ -1,3 +1,9 @@
+"""Cross-attention VIO pose network (CAVIO); not present in upstream VIFT.
+
+VIFT’s default latent path uses concatenation + ``PoseTransformer`` (``vift.py``).
+This module replaces fusion with IMU→visual cross-attention and causal self-attention; see class docstring.
+"""
+
 from torch import nn
 import torch
 import math
