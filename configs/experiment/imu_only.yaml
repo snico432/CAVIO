@@ -10,10 +10,10 @@ defaults:
   - override /callbacks: default
   - override /trainer: default
 
-tags: ["IMU-only", "Baseline"]
+tags: ["IMU-only"]
 
 seed: 42
 
 model:
   tester:
-    plot_label: "IMU-only (d_model=512, d_ff=1024)"
+    plot_label: "IMU-only"
