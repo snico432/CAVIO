@@ -6,7 +6,7 @@ import math
 
 class IMUOnlyPoseTransformer(nn.Module):
     """
-    Pose transformer variant that performs self-attention on IMU latent tokens:
+    Pose transformer variant that performs self-attention on IMU latents.
     """
 
     def __init__(

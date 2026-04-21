@@ -10,10 +10,10 @@ import math
 
 class CAVIOPoseTransformer(nn.Module):
     """
-    Pose transformer variant that performs exclusive cross-attention:
-    - IMU latent tokens first query visual latent tokens
-    - IMU latent tokens then interact through self-attention
-    - visual latent tokens are used as keys/values, and the query is excluded from the self-attention
+    Pose transformer variant that performs cross-attention between IMU and visual latents.
+    - IMU latents first query visual latents
+    - IMU latents then interact through self-attention
+    - visual latents are used as keys/values
     """
 
     def __init__(
