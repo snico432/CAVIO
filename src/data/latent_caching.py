@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Cache visual+IMU latents from the pretrained Encoder for KITTI sequences.
 

@@ -18,3 +18,6 @@ python3 ./pretrained_models/download_model.py
 
 # KITTI odometry color + poses -> data/kitti_data/ (VIFT-identical script; cwd must be data/)
 ( cd "$ROOT/data" && bash ./data_prep.sh )
+
+# Precompute encoder latents -> data/kitti_latent_data/{train,val}/ (GPU recommended)
+python3 "$ROOT/src/data/latent_caching.py"
