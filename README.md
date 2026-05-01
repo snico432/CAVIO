@@ -1,12 +1,14 @@
 # CAVIO
 
-Cross-Attention Visual-Inertial Odometry (CAVIO) is a PyTorch Lightning and Hydra codebase for training latent-space visual-inertial odometry models on KITTI. The project explores whether replacing VIFT-style feature concatenation with structured cross-attention improves visual/IMU fusion for camera pose estimation.
+Cross-Attention Visual-Inertial Odometry (CAVIO) is a PyTorch Lightning and Hydra codebase for training latent-space visual-inertial odometry models on KITTI. The project investigates whether replacing VIFT-style feature concatenation with structured cross-attention improves visual/IMU fusion for camera pose estimation.
 
 ## Overview
 
 VIFT combines visual features from a pretrained encoder with IMU features, then passes the concatenated representation through a transformer pose model. CAVIO keeps the same general training and latent-data workflow, but changes the fusion mechanism: IMU latents query visual latents through cross-attention, followed by causal self-attention over the fused temporal sequence.
 
 The project includes the main CAVIO transformer, several ablations, configurable pose losses, and a KITTI evaluation harness for trajectory and odometry metrics.
+
+For more background and experimental details, see the CIS4910 [literature review](docs/literature_review.pdf) and [final report](docs/final_report.pdf).
 
 ## Implementation Highlights
 
@@ -20,11 +22,6 @@ The project includes the main CAVIO transformer, several ablations, configurable
 The strongest CAVIO configuration used a 512-dimensional transformer embedding, 1024-dimensional feed-forward layers, 8 attention heads, and a rotation loss weight of 25. In the final report, this configuration improved selected sequence-level KITTI metrics compared with the reproduced VIFT baseline while remaining competitive overall.
 
 The experiments also showed that vertical trajectory estimation remained difficult: top-down motion was captured more reliably than the y-axis component. The IMU-only ablation performed substantially worse, confirming that visual features contributed meaningful signal even when fusion quality was the main bottleneck.
-
-For the full experiment discussion, see:
-
-- `docs/reports/final_report.pdf`
-- `docs/reports/literature_review.pdf`
 
 ## Project Structure
 
