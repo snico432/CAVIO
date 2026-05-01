@@ -1,37 +1,42 @@
 # CAVIO
 
-Cross-Attention Visual-Inertial Odometry (CAVIO): a PyTorch Lightning + Hydra codebase for training and evaluating latent-space VIO models.
+Cross-Attention Visual-Inertial Odometry (CAVIO) is a PyTorch Lightning and Hydra codebase for training latent-space visual-inertial odometry models on KITTI. The project explores whether replacing VIFT-style feature concatenation with structured cross-attention improves visual/IMU fusion for camera pose estimation.
 
-## Acknowledgements
+## Overview
 
-This repository is heavily influenced by the VIFT repository design and workflow.  
-Many project patterns (training/eval structure, configuration style, and parts of the VIO pipeline) follow that prior codebase and are adapted here for CAVIO experiments.
+VIFT combines visual features from a pretrained encoder with IMU features, then passes the concatenated representation through a transformer pose model. CAVIO keeps the same general training and latent-data workflow, but changes the fusion mechanism: IMU latents query visual latents through cross-attention, followed by causal self-attention over the fused temporal sequence.
 
-VIFT repository: [https://github.com/ybkurt/vift](https://github.com/ybkurt/vift)
+The project includes the main CAVIO transformer, several ablations, configurable pose losses, and a KITTI evaluation harness for trajectory and odometry metrics.
 
-Development used [Cursor](https://cursor.com) (AI-assisted editing) for refactoring, documentation, and tooling; model design, experiments, and analysis are the author’s own.
+## Implementation Highlights
 
-## Where to review the project work (CAVIO-specific)
+- Built `CAVIOPoseTransformer`, a cross-attention VIO model where IMU features query visual features before causal temporal self-attention.
+- Added ablation models for IMU-only, gated cross-attention, and visual-residual fusion variants.
+- Refactored VIFT-derived training, loss, and evaluation code to reduce duplication and improve readability, maintainability, and reuse.
+- Organized experiments with Hydra presets for baseline, architecture-size, dropout, loss-weighting, and ablation runs.
 
-Aside from the shared VIFT-style training shell, data layout, and pretrained encoder, the highest-impact paths for grading or code review are:
+## Results Summary
 
-- **`src/models/components/cavio.py`** — `CAVIOPoseTransformer` (cross-attention fusion + causal self-attention); the main architecture.
-- **`src/models/components/`** — Ablations: `cavio_gated.py`, `cavio_visual_residual.py`, `imu_only.py`.
-- **`src/losses/weighted_loss.py`** — RPMG pose losses and configurable `CustomWeightedPoseLoss` (used in α and axis-weighting experiments).
-- **`configs/model/`** and **`configs/experiment/`** — Hydra defaults and experiment presets; optional batch reruns via **`scripts/schedule_report.sh`**.
-- **`src/utils/plotting/`** — Training curves (`plot_train_losses.py`) and KITTI trajectory / speed figures (`kitti_traj_plotting.py`).
-- **`src/testers/latent_kitti_eval_runner.py`** and **`latent_kitti_eval_harness.py`** — Latent KITTI eval (encoder wrapper, metrics, plots from the Lightning test step).
+The strongest CAVIO configuration used a 512-dimensional transformer embedding, 1024-dimensional feed-forward layers, 8 attention heads, and a rotation loss weight of 25. In the final report, this configuration improved selected sequence-level KITTI metrics compared with the reproduced VIFT baseline while remaining competitive overall.
 
-For pipeline glue (KITTI metric definitions, Hydra wiring, latent caching, checkpoint safe globals), see `src/metrics/kitti_metrics.py`, `src/utils/lit_hydra.py`, `src/utils/safe_globals.py`, and `src/data/latent_caching.py`.
+The experiments also showed that vertical trajectory estimation remained difficult: top-down motion was captured more reliably than the y-axis component. The IMU-only ablation performed substantially worse, confirming that visual features contributed meaningful signal even when fusion quality was the main bottleneck.
+
+For the full experiment discussion, see:
+
+- `docs/reports/final_report.pdf`
+- `docs/reports/literature_review.pdf`
 
 ## Project Structure
 
-- `src/train.py`: training entrypoint (optionally runs test after fit)
-- `src/eval.py`: evaluation-only entrypoint
-- `configs/`: Hydra configuration groups for data, model, logger, trainer, paths
-- `src/models/`: Lightning modules and model components
-- `src/testers/`: KITTI latent evaluation harness/runner
-- `src/utils/plotting/`: plotting utilities for training-loss and trajectory plots
+- `src/models/components/cavio.py`: main cross-attention transformer architecture
+- `src/models/components/`: CAVIO ablations and VIFT-compatible components
+- `src/models/weighted_vio_module.py`: Lightning module for training and evaluation
+- `src/losses/weighted_loss.py`: weighted pose losses and RPMG-based objectives
+- `src/metrics/kitti_metrics.py`: KITTI odometry metric utilities
+- `src/testers/`: latent KITTI evaluation harness and runner
+- `src/utils/plotting/`: training-loss and trajectory plotting utilities
+- `configs/`: Hydra configuration groups and experiment presets
+- `scripts/`: setup, debug, and batch experiment helpers
 
 ## Setup
 
@@ -51,9 +56,9 @@ The main training config is `configs/train.yaml`, which composes:
 - `data: latent_kitti_vio`
 - `model: cavio`
 - `logger: many_loggers`
-- `trainer: default` (use `trainer=gpu` on the CLI for GPU; see `configs/trainer/gpu.yaml`)
+- `trainer: default`
 
-Evaluation config is `configs/eval.yaml`.
+Use `trainer=gpu` on the CLI for GPU training. Evaluation config is `configs/eval.yaml`.
 
 ## Train
 
@@ -73,19 +78,27 @@ python src/eval.py experiment=cross_attn_d512_ff1024 trainer=gpu ckpt_path=/path
 
 ## Outputs
 
-Hydra writes each run to a unique output directory (see `configs/hydra/default.yaml` and `configs/paths/default.yaml`).
+Hydra writes each run to a unique output directory using `configs/hydra/default.yaml` and `configs/paths/default.yaml`.
 
 Artifacts include:
 
 - model checkpoints
-- csv logs
-- tensorboard logs
+- CSV logs
+- TensorBoard logs
 - `error_metrics.json`: final test metrics
-- `plots/` directory containing:
-  - `loss_plot.png`: train/val loss plot
-  - `component_loss_plot.png`: train/val component loss plot (rotation and translation)
-  - KITTI trajectory plots: top-down path and vertical trajectory plot
+- `plots/`:
+  - `loss_plot.png`: train/validation loss plot
+  - `component_loss_plot.png`: rotation and translation loss plot
+  - `trajectories.png`: KITTI trajectory plots with top-down path and vertical trajectory comparison
+
+## Acknowledgements
+
+This repository is heavily influenced by the VIFT repository design and workflow. Many project patterns, including the training/evaluation structure, configuration style, latent-data flow, and parts of the VIO pipeline, follow that prior codebase and are adapted here for CAVIO experiments.
+
+VIFT repository: <https://github.com/ybkurt/vift>
+
+Development used [Cursor](https://cursor.com) for AI-assisted refactoring, documentation, and tooling. Model design, experiments, and analysis are the author's own.
 
 ## Notes
 
-- If you modify logger layout, keep CSV logging enabled so loss plotting can read `metrics.csv`.
+- Keep CSV logging enabled if you modify the logger layout; loss plotting expects `metrics.csv`.
