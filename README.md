@@ -15,6 +15,7 @@ For more background and experimental details, see the CIS4910 [literature review
 - Built `CAVIOPoseTransformer`, a cross-attention VIO model where IMU features query visual features before causal temporal self-attention.
 - Added ablation models for IMU-only, gated cross-attention, and visual-residual fusion variants.
 - Refactored VIFT-derived training, loss, and evaluation code to reduce duplication and improve readability, maintainability, and reuse.
+- Extended plotting scripts and loss metrics to include learning rate and translation/rotation component losses.
 - Organized experiments with Hydra presets for baseline, architecture-size, dropout, loss-weighting, and ablation runs.
 
 ## Results Summary
